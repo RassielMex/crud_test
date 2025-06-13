@@ -1,4 +1,10 @@
-import { IsEmail, IsString, Matches, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 import {
   ERROR_MESSAGE,
   RFC_REGEX,
@@ -16,12 +22,13 @@ export class CreateUserDto {
   })
   name: string;
 
+  @IsOptional()
   @IsString({
     message: (arg) =>
       getErrorMessageTemplate(arg, ERROR_MESSAGE.MUST_BE_STRING),
   })
   @IsEmail({}, { message: ERROR_MESSAGE.EMAIL })
-  email: string;
+  email: string | null;
 
   @IsString({
     message: (arg) =>

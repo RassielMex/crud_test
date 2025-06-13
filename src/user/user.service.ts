@@ -19,7 +19,7 @@ export class UserService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002')
-          throw new Error(RESPONSE_ERROR.EXISTING_EMAIL);
+          throw new Error(RESPONSE_ERROR.EXISTING_RECORD);
       }
 
       throw new Error(RESPONSE_ERROR.GENERAL_ERROR);
