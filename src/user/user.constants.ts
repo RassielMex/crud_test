@@ -12,4 +12,10 @@ export const ERROR_MESSAGE = {
 export const RESPONSE_ERROR = {
   EXISTING_EMAIL: 'Email ya existe en la base',
   GENERAL_ERROR: 'Algo sucedió en la DB',
+  NO_EXISTING_RECORD: 'No se encuentra disponible el usuario con ese ID',
+};
+
+export const RESPONSE_SUCCESS = {
+  CREATED: 'Usuario creado con éxito',
+  DELETED: 'Usuario eliminado',
 };

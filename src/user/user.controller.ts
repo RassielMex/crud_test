@@ -12,6 +12,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RESPONSE_ERROR } from 'src/user/user.constants';
 
 @Controller('user')
 export class UserController {
@@ -35,17 +36,38 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.userService.findOne(+id);
+    } catch (error) {
+      throw new HttpException(
+        error instanceof Error ? error.message : '',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    try {
+      return this.userService.update(+id, updateUserDto);
+    } catch {
+      throw new HttpException(
+        RESPONSE_ERROR.NO_EXISTING_RECORD,
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.userService.remove(+id);
+    } catch {
+      throw new HttpException(
+        RESPONSE_ERROR.GENERAL_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

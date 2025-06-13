@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from 'generated/prisma';
 import { ICreateUserResponse } from 'src/user/entities/user.responses';
-import { RESPONSE_ERROR } from 'src/user/user.constants';
+import { RESPONSE_ERROR, RESPONSE_SUCCESS } from 'src/user/user.constants';
 
 @Injectable()
 export class UserService {
@@ -15,7 +15,7 @@ export class UserService {
       const user = await this.prisma.user.create({
         data: { ...createUserDto },
       });
-      return { error: false, message: 'Usuario creado con éxito', user: user };
+      return { error: false, message: RESPONSE_SUCCESS.CREATED, user: user };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002')
@@ -30,22 +30,26 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({
+  async findOne(id: number) {
+    const response = await this.prisma.user.findUnique({
       where: { id },
     });
+    if (response) return response;
+    throw new Error(RESPONSE_ERROR.NO_EXISTING_RECORD);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const response = await this.prisma.user.update({
       where: { id },
       data: { ...updateUserDto },
     });
+    return response;
   }
 
-  remove(id: number) {
-    return this.prisma.user.delete({
+  async remove(id: number) {
+    const response = await this.prisma.user.delete({
       where: { id },
     });
+    if (response) return RESPONSE_SUCCESS.DELETED;
   }
 }
